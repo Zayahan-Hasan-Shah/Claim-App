@@ -1,4 +1,7 @@
+import 'package:claim_app/core/validations/app_validation.dart';
+import 'package:claim_app/core/widgets/custom_app_bar.dart';
 import 'package:claim_app/core/widgets/custom_button.dart';
+import 'package:claim_app/core/widgets/custom_text.dart';
 import 'package:claim_app/core/widgets/custom_textfield.dart';
 import 'package:claim_app/features/auth/presentation/controllers/auth_providers.dart';
 import 'package:flutter/material.dart';
@@ -42,59 +45,69 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     });
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Login')),
+      appBar: const CustomAppBar(title: 'Login'),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
           child: Column(
             children: [
-              CustomTextField(
-                controller: _emailController,
+              buildTextField(
                 label: 'Email',
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your email';
-                  }
-                  return null;
-                },
+                controller: _emailController,
+                validator: AppValidation.validateEmail,
               ),
               const SizedBox(height: 16),
-              CustomTextField(
-                controller: _passwordController,
+              buildTextField(
                 label: 'Password',
+                controller: _passwordController,
                 obscureText: true,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your password';
-                  }
-                  return null;
-                },
+                validator: AppValidation.validatePassword,
               ),
               const SizedBox(height: 24),
               authState is AuthLoading
                   ? const CircularProgressIndicator()
                   : CustomButton(
                       text: 'Login',
-                      onPressed: () {
-                        if (_formKey.currentState!.validate()) {
-                          ref.read(authControllerProvider.notifier).login(
-                                _emailController.text.trim(),
-                                _passwordController.text.trim(),
-                              );
-                        }
-                      },
+                      onPressed: _login,
                     ),
+              const SizedBox(height: 16),
               TextButton(
                 onPressed: () {
                   context.push(RouteNames.forgotPassword);
                 },
-                child: const Text('Forgot Password?'),
+                child: const CustomText(
+                    title: 'Forgot Password?',
+                    fontSize: 16,
+                    color: Colors.blue,
+                    underline: true),
               ),
             ],
           ),
         ),
       ),
     );
+  }
+
+  Widget buildTextField({
+    required String label,
+    required TextEditingController controller,
+    bool obscureText = false,
+    String? Function(String?)? validator,
+  }) {
+    return CustomTextField(
+      controller: controller,
+      label: label,
+      obscureText: obscureText,
+      validator: validator,
+    );
+  }
+
+  void _login() {
+    if (_formKey.currentState?.validate() ?? false) {
+      final email = _emailController.text.trim();
+      final password = _passwordController.text.trim();
+      ref.read(authControllerProvider.notifier).login(email, password);
+    }
   }
 }

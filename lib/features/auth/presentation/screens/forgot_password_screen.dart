@@ -1,6 +1,6 @@
 // features/auth/presentation/screens/forgot_password_screen.dart
 import 'package:claim_app/core/utils/validators.dart';
-import 'package:claim_app/core/widgets/custom_text.dart';
+import 'package:claim_app/core/widgets/custom_app_bar.dart';
 import 'package:claim_app/core/widgets/loading_indicator.dart';
 import 'package:claim_app/features/auth/presentation/controllers/auth_providers.dart';
 import 'package:flutter/material.dart';
@@ -47,7 +47,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
     });
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Forgot Password')),
+      appBar: const CustomAppBar(title: 'Forgot Password'),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
@@ -55,35 +55,45 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const CustomText(
-                title: 'Enter your email to receive a temporary password',
-                fontSize: 16,
-                align: TextAlign.center,
-              ),
-              const SizedBox(height: 24),
-              CustomTextField(
-                controller: _emailController,
-                label: 'Email',
-                validator: Validators.email,
-                keyboardType: TextInputType.emailAddress,
-              ),
+              buildEmailField(),
               const SizedBox(height: 24),
               authState is AuthLoading
                   ? const LoadingIndicator()
-                  : CustomButton(
-                      text: 'Send Password',
-                      onPressed: () {
-                        if (_formKey.currentState!.validate()) {
-                          ref
-                              .read(authControllerProvider.notifier)
-                              .forgotPassword(_emailController.text.trim());
-                        }
-                      },
-                    ),
+                  : buildSendButton(authState),
             ],
           ),
         ),
       ),
     );
+  }
+
+  Widget buildLoadingIndicator() {
+    return const Center(
+      child: CircularProgressIndicator(),
+    );
+  }
+
+  Widget buildEmailField() {
+    return CustomTextField(
+      controller: _emailController,
+      label: 'Email',
+      validator: Validators.email,
+      keyboardType: TextInputType.emailAddress,
+    );
+  }
+
+  Widget buildSendButton(AuthState authState) {
+    return authState is AuthLoading
+        ? const LoadingIndicator()
+        : CustomButton(
+            text: 'Send Password',
+            onPressed: () {
+              if (_formKey.currentState!.validate()) {
+                ref
+                    .read(authControllerProvider.notifier)
+                    .forgotPassword(_emailController.text.trim());
+              }
+            },
+          );
   }
 }

@@ -1,12 +1,16 @@
-import 'package:claim_app/core/widgets/claim_card.dart';
+// features/claim/presentation/screens/claim_list_screen.dart
+import 'package:claim_app/core/widgets/custom_app_bar.dart';
+import 'package:claim_app/core/widgets/logout_confirmation.dart';
 import 'package:claim_app/features/auth/presentation/controllers/auth_providers.dart';
 import 'package:claim_app/features/claim/data/models/claim_model.dart';
 import 'package:claim_app/features/claim/presentation/controllers/claim_controller.dart';
 import 'package:claim_app/features/claim/presentation/controllers/claim_provider.dart';
+import 'package:claim_app/features/claim/presentation/widgets/claim_details_dailog.dart';
+import 'package:claim_app/features/claim/presentation/widgets/claim_list.dart';
+import 'package:claim_app/navigation/route_names.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:claim_app/navigation/route_names.dart';
 
 class ClaimListScreen extends ConsumerStatefulWidget {
   const ClaimListScreen({super.key});
@@ -19,6 +23,10 @@ class _ClaimListScreenState extends ConsumerState<ClaimListScreen> {
   @override
   void initState() {
     super.initState();
+    _loadClaims();
+  }
+
+  void _loadClaims() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(claimControllerProvider.notifier).fetchClaims();
     });
@@ -29,62 +37,54 @@ class _ClaimListScreenState extends ConsumerState<ClaimListScreen> {
     final claimState = ref.watch(claimControllerProvider);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('My Claims'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.logout),
-            onPressed: () async {
-              final shouldLogout = await showDialog<bool>(
-                context: context,
-                builder: (context) => AlertDialog(
-                  title: const Text('Confirm Logout'),
-                  content: const Text('Are you sure you want to logout?'),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Navigator.pop(context, false),
-                      child: const Text('Cancel'),
-                    ),
-                    TextButton(
-                      onPressed: () => Navigator.pop(context, true),
-                      child: const Text('Logout'),
-                    ),
-                  ],
-                ),
-              );
+      appBar: _buildAppBar(context),
+      body: _buildBody(claimState),
+      floatingActionButton: _buildFloatingActionButton(context),
+    );
+  }
 
-              if (shouldLogout ?? false) {
-                _logout(ref, context);
-              }
-            },
-          ),
-        ],
-      ),
-      body: claimState is ClaimLoading
-          ? const Center(child: CircularProgressIndicator())
-          : claimState is ClaimLoaded
-              ? claimState.claims.isEmpty
-                  ? const Center(child: Text('No claims found'))
-                  : ListView.builder(
-                      itemCount: claimState.claims.length,
-                      itemBuilder: (context, index) {
-                        final claim = claimState.claims[index];
-                        return ClaimCard(
-                          claim: claim,
-                          onTap: () => _showClaimDetails(claim),
-                        );
-                      },
-                    )
-              : claimState is ClaimError
-                  ? Center(child: Text(claimState.message))
-                  : const SizedBox(),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          context.push(RouteNames.addClaim);
-        },
-        child: const Icon(Icons.add),
+  CustomAppBar _buildAppBar(BuildContext context) {
+    return CustomAppBar(
+      title: 'My Claims',
+      trailingWidget: IconButton(
+        icon: const Icon(Icons.logout),
+        onPressed: () => _handleLogout(context),
       ),
     );
+  }
+
+  Widget _buildBody(ClaimState claimState) {
+    if (claimState is ClaimLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    if (claimState is ClaimError) {
+      return Center(child: Text(claimState.message));
+    }
+
+    if (claimState is ClaimLoaded) {
+      return ClaimsList(
+        claims: claimState.claims,
+        onClaimTap: _showClaimDetails,
+      );
+    }
+
+    return const SizedBox();
+  }
+
+  Widget _buildFloatingActionButton(BuildContext context) {
+    return FloatingActionButton(
+      onPressed: () => context.push(RouteNames.addClaim),
+      child: const Icon(Icons.add),
+    );
+  }
+
+  Future<void> _handleLogout(BuildContext context) async {
+    final shouldLogout = await showLogoutConfirmationDialog(context);
+
+    if (shouldLogout ?? false) {
+      await _logout(ref, context);
+    }
   }
 
   Future<void> _logout(WidgetRef ref, BuildContext context) async {
@@ -94,38 +94,20 @@ class _ClaimListScreenState extends ConsumerState<ClaimListScreen> {
       context.goNamed(RouteNames.login);
     } catch (e) {
       if (!context.mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Logout failed: ${e.toString()}')),
-      );
+      _showErrorSnackBar(context, 'Logout failed: ${e.toString()}');
     }
   }
 
   void _showClaimDetails(Claim claim) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(claim.memberName),
-        content: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text('Status: ${claim.status.toString().split('.').last}'),
-            Text('Amount: \$${claim.amount}'),
-            if (claim.approvedAmount != null)
-              Text('Approved Amount: \$${claim.approvedAmount}'),
-            if (claim.deductedAmount != null)
-              Text('Deducted Amount: \$${claim.deductedAmount}'),
-            if (claim.rejectionReason != null)
-              Text('Reason: ${claim.rejectionReason}'),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Close'),
-          ),
-        ],
-      ),
+      builder: (context) => ClaimDetailsDialog(claim: claim),
+    );
+  }
+
+  void _showErrorSnackBar(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
     );
   }
 }

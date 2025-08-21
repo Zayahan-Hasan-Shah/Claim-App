@@ -12,6 +12,8 @@ class AppColors {
   static const textSecondary = Color(0xFF5F6368);
   static const divider = Color(0xFFDADCE0);
   static const grey = Colors.grey;
+  static const brightYellowColor = Color(0xFFFFD600);
+  static const lightYellowColor = Color(0xFFFFF9C4);
+  static const purpleColor = Color(0xFF7B2FF2);
+  static const orangeColor = Color(0xFFE96443);
 }
-
-

@@ -15,9 +15,6 @@ class MyApp extends StatelessWidget {
       title: 'Claim App',
       debugShowCheckedModeBanner: false,
       routerConfig: AppRouter.router,
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
     );
   }
 }

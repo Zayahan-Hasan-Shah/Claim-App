@@ -1,5 +1,5 @@
+import 'package:claim_app/core/constants/app_colors.dart';
 import 'package:claim_app/core/validations/app_validation.dart';
-import 'package:claim_app/core/widgets/custom_app_bar.dart';
 import 'package:claim_app/core/widgets/custom_button.dart';
 import 'package:claim_app/core/widgets/custom_text.dart';
 import 'package:claim_app/core/widgets/custom_textfield.dart';
@@ -45,47 +45,167 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     });
 
     return Scaffold(
-      appBar: const CustomAppBar(title: 'Login'),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              AppColors.brightYellowColor,
+              AppColors.lightYellowColor,
+            ],
+          ),
+        ),
+        child: SingleChildScrollView(
           child: Column(
             children: [
-              buildTextField(
-                label: 'Email',
-                controller: _emailController,
-                validator: AppValidation.validateEmail,
+              const SizedBox(height: 60),
+              // Logo and company name
+              const Column(
+                children: [
+                  SizedBox(height: 12),
+                  CustomText(
+                    title: 'Century Insurance',
+                    fontSize: 22,
+                    weight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                  SizedBox(height: 2),
+                  CustomText(
+                    title: 'A Lakson Group Company',
+                    fontSize: 14,
+                    weight: FontWeight.normal,
+                    color: Colors.black87,
+                  ),
+                ],
               ),
-              const SizedBox(height: 16),
-              buildTextField(
-                label: 'Password',
-                controller: _passwordController,
-                obscureText: true,
-                validator: AppValidation.validatePassword,
-              ),
-              const SizedBox(height: 24),
-              authState is AuthLoading
-                  ? const CircularProgressIndicator()
-                  : CustomButton(
-                      text: 'Login',
-                      onPressed: _login,
+              const SizedBox(height: 36),
+              // Card with form
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Card(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  elevation: 8,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 32),
+                    child: Form(
+                      key: _formKey,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const CustomText(
+                            title: 'Sign in',
+                            fontSize: 28,
+                            weight: FontWeight.bold,
+                          ),
+                          const SizedBox(height: 24),
+                          const CustomText(
+                            title: 'User name or email',
+                            fontSize: 16,
+                            weight: FontWeight.normal,
+                            color: Colors.black87,
+                          ),
+                          const SizedBox(height: 8),
+                          buildEmailTextField(),
+                          const SizedBox(height: 20),
+                          const CustomText(
+                            title: 'Password',
+                            fontSize: 16,
+                            weight: FontWeight.normal,
+                            color: Colors.black87,
+                          ),
+                          const SizedBox(height: 8),
+                          buildPasswordTextField(),
+                          const SizedBox(height: 32),
+                          SizedBox(
+                            width: double.infinity,
+                            height: 50,
+                            child: authState is AuthLoading
+                                ? const Center(
+                                    child: CircularProgressIndicator())
+                                : CustomButton(
+                                    text: 'Sign in',
+                                    onPressed: _login,
+                                    gradient: const LinearGradient(
+                                      colors: [
+                                        AppColors.purpleColor,
+                                        AppColors.orangeColor,
+                                      ],
+                                    ),
+                                    borderRadius: 12,
+                                  ),
+                          ),
+                          const SizedBox(height: 8),
+                          Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                TextButton(
+                                  onPressed: () {
+                                    context.push(RouteNames.forgotPassword);
+                                  },
+                                  child: const CustomText(
+                                    title: 'Forgot Password?',
+                                    fontSize: 16,
+                                    weight: FontWeight.normal,
+                                    color: Colors.black87,
+                                  ),
+                                ),
+                              ])
+                        ],
+                      ),
                     ),
-              const SizedBox(height: 16),
-              TextButton(
-                onPressed: () {
-                  context.push(RouteNames.forgotPassword);
-                },
-                child: const CustomText(
-                    title: 'Forgot Password?',
-                    fontSize: 16,
-                    color: Colors.blue,
-                    underline: true),
+                  ),
+                ),
               ),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  Widget buildEmailTextField() {
+    return CustomTextField(
+      hintText: 'User Name or Email',
+      controller: _emailController,
+      validator: AppValidation.validateEmail,
+      prefixIcon: const Icon(Icons.person_outline),
+      suffixIcon: _emailController.text.isNotEmpty
+          ? IconButton(
+              icon: const Icon(Icons.clear),
+              onPressed: () => _emailController.clear(),
+            )
+          : null,
+      borderColor: Colors.amber,
+      borderRadius: 12,
+    );
+  }
+
+  Widget buildPasswordTextField() {
+    return CustomTextField(
+      controller: _passwordController,
+      obscureText: true,
+      validator: AppValidation.validatePassword,
+      prefixIcon: const Icon(Icons.lock_outline),
+      suffixIcon: IconButton(
+        icon: Icon(
+          _passwordController.text.isNotEmpty
+              ? Icons.visibility_off
+              : Icons.visibility,
+        ),
+        onPressed: () {
+          setState(() {
+            // Toggle obscureText
+          });
+        },
+      ),
+      borderColor: Colors.amber,
+      borderRadius: 12,
     );
   }
 

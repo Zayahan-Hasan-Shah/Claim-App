@@ -1,10 +1,13 @@
 // features/family/presentation/screens/family_member_list_screen.dart
 import 'package:claim_app/features/family/data/repositories/family_repository.dart';
 import 'package:claim_app/features/family/presentation/controllers/family_controller.dart';
+import 'package:claim_app/features/family/presentation/widgets/family_member_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:claim_app/features/family/data/models/family_member_model.dart';
 import 'package:claim_app/navigation/route_names.dart';
+import 'package:claim_app/core/constants/app_colors.dart';
+import 'package:claim_app/core/widgets/custom_text.dart';
 import 'package:go_router/go_router.dart';
 
 class FamilyMemberListScreen extends ConsumerStatefulWidget {
@@ -30,181 +33,173 @@ class _FamilyMemberListScreenState
     final familyState = ref.watch(familyControllerProvider);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Family Members'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.add),
-            onPressed: () => context.pushNamed(RouteNames.addFamilyMember),
-          ),
-        ],
-      ),
-      body: familyState is FamilyLoading
-          ? const Center(child: CircularProgressIndicator())
-          : familyState is FamilyError
-              ? Center(child: Text(familyState.message))
-              : familyState is FamilyLoaded
-                  ? _buildFamilyMemberTable(familyState.members)
-                  : const SizedBox(),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => context.pushNamed(RouteNames.addFamilyMember),
-        child: const Icon(Icons.add),
-      ),
-    );
-  }
-
-  Widget _buildFamilyMemberTable(List<FamilyMember> members) {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: DataTable(
-        columns: const [
-          DataColumn(label: Text('Name')),
-          DataColumn(label: Text('Relation')),
-          DataColumn(label: Text('CNIC')),
-          DataColumn(label: Text('Age')),
-          DataColumn(label: Text('Gender')),
-          DataColumn(label: Text('Attachment')), // New column for attachment
-        ],
-        rows: members.map((member) {
-          final age = DateTime.now().year - member.dateOfBirth.year;
-          return DataRow(
-            cells: [
-              DataCell(Text(member.name)),
-              DataCell(Text(member.relation.displayName)),
-              DataCell(Text(member.cnic)),
-              DataCell(Text(age.toString())),
-              DataCell(Text(member.gender.displayName)),
-              DataCell(_buildAttachmentIcon(member)), // Attachment icon cell
+      backgroundColor: Colors.white,
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              AppColors.brightYellowColor,
+              AppColors.lightYellowColor,
             ],
-            onSelectChanged: (_) => _showMemberDetails(context, member),
-          );
-        }).toList(),
-      ),
-    );
-  }
-
-  Widget _buildAttachmentIcon(FamilyMember member) {
-    if (member.attachmentPath == null) {
-      return const Icon(Icons.no_accounts, color: Colors.grey);
-    }
-
-    final extension = member.attachmentPath!.split('.').last.toLowerCase();
-
-    if (extension == 'pdf') {
-      return const Icon(Icons.picture_as_pdf, color: Colors.red);
-    } else if (['jpg', 'jpeg', 'png', 'gif'].contains(extension)) {
-      return const Icon(Icons.image, color: Colors.blue);
-    } else {
-      return const Icon(Icons.attach_file, color: Colors.green);
-    }
-  }
-
-  void _showMemberDetails(BuildContext context, FamilyMember member) {
-    final age = DateTime.now().year - member.dateOfBirth.year;
-    final dobFormatted =
-        '${member.dateOfBirth.day}/${member.dateOfBirth.month}/${member.dateOfBirth.year}';
-
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(member.name),
-        content: SingleChildScrollView(
+          ),
+        ),
+        child: SafeArea(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
             children: [
-              Text('Relation: ${member.relation.displayName}'),
-              Text('CNIC: ${member.cnic}'),
-              Text('Gender: ${member.gender.displayName}'),
-              Text('Date of Birth: $dobFormatted'),
-              Text('Age: $age years'),
-              Text('Added on: ${member.createdAt.toLocal()}'),
               const SizedBox(height: 16),
-              _buildAttachmentSection(member), // Show attachment in details
+              const Center(
+                child: CustomText(
+                  title: 'My Family',
+                  fontSize: 22,
+                  weight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 16),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(color: AppColors.warning, width: 1.5),
+                    borderRadius: BorderRadius.circular(16),
+                    color: Colors.white,
+                  ),
+                  child: Row(
+                    children: [
+                      const SizedBox(width: 12),
+                      const Icon(Icons.search, color: Colors.grey),
+                      const SizedBox(width: 8),
+                      const Expanded(
+                        child: TextField(
+                          decoration: InputDecoration(
+                            hintText: 'Search...',
+                            border: InputBorder.none,
+                          ),
+                        ),
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.calendar_today_outlined,
+                            color: AppColors.purpleColor),
+                        onPressed: () {},
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [ 
+                    const Icon(Icons.add_circle, color: AppColors.purpleColor),
+                    const SizedBox(width: 8),
+                    GestureDetector(
+                      onTap: () => context.push(RouteNames.addFamilyMember),
+                      child: const CustomText(
+                        title: 'Add Family Member',
+                        fontSize: 16,
+                        color: AppColors.purpleColor,
+                        underline: true,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+              Expanded(
+                child: familyState is FamilyLoading
+                    ? const Center(child: CircularProgressIndicator())
+                    : familyState is FamilyError
+                        ? Center(
+                            child: CustomText(
+                                title: familyState.message, color: Colors.red))
+                        : familyState is FamilyLoaded
+                            ? ListView.separated(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 16, vertical: 8),
+                                itemCount: familyState.members.length,
+                                separatorBuilder: (_, __) =>
+                                    const SizedBox(height: 16),
+                                itemBuilder: (context, index) {
+                                  final member = familyState.members[index];
+                                  return FamilyMemberCard(
+                                    member: member,
+                                    onDetail: () =>
+                                        _showMemberDetails(context, member),
+                                  );
+                                },
+                              )
+                            : const SizedBox(),
+              ),
             ],
           ),
         ),
-        actions: [
-          if (member.attachmentPath != null)
-            TextButton(
-              onPressed: () => _viewAttachment(context, member),
-              child: const Text('View Attachment'),
-            ),
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Close'),
-          ),
-        ],
       ),
     );
   }
+}
 
-  Widget _buildAttachmentSection(FamilyMember member) {
-    if (member.attachmentPath == null) {
-      return const SizedBox();
-    }
 
-    final extension = member.attachmentPath!.split('.').last.toLowerCase();
-    final isPdf = extension == 'pdf';
-    final isImage = ['jpg', 'jpeg', 'png', 'gif'].contains(extension);
+void _showMemberDetails(BuildContext context, FamilyMember member) {
+  final age = DateTime.now().year - member.dateOfBirth.year;
+  final dobFormatted =
+      '${member.dateOfBirth.day}/${member.dateOfBirth.month}/${member.dateOfBirth.year}';
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Attachment:',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        const SizedBox(height: 8),
-        Row(
+  showDialog(
+    context: context,
+    builder: (context) => Dialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            isPdf
-                ? const Icon(Icons.picture_as_pdf, color: Colors.red, size: 24)
-                : isImage
-                    ? const Icon(Icons.image, color: Colors.blue, size: 24)
-                    : const Icon(Icons.attach_file,
-                        color: Colors.green, size: 24),
-            const SizedBox(width: 8),
-            Expanded(
-              child: Text(
-                member.attachmentPath!.split('/').last,
-                overflow: TextOverflow.ellipsis,
+            Center(
+              child: CustomText(
+                title: member.name,
+                fontSize: 22,
+                weight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 16),
+            CustomText(
+                title: 'Relation: ${member.relation.displayName}',
+                fontSize: 16),
+            CustomText(
+                title: 'Gender: ${member.gender.displayName}', fontSize: 16),
+            CustomText(title: 'CNIC: ${member.cnic}', fontSize: 16),
+            CustomText(title: 'Date of Birth: $dobFormatted', fontSize: 16),
+            CustomText(title: 'Age: $age years', fontSize: 16),
+            CustomText(
+                title: 'Added on: ${member.createdAt.toLocal()}', fontSize: 16),
+            const SizedBox(height: 24),
+            Align(
+              alignment: Alignment.center,
+              child: SizedBox(
+                width: 120,
+                height: 48,
+                child: OutlinedButton(
+                  onPressed: () => Navigator.pop(context),
+                  style: OutlinedButton.styleFrom(
+                    side: const BorderSide(color: AppColors.purpleColor),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: const Text('Close',
+                      style: TextStyle(color: AppColors.purpleColor)),
+                ),
               ),
             ),
           ],
         ),
-      ],
-    );
-  }
-
-  void _viewAttachment(BuildContext context, FamilyMember member) {
-    // For now, just show a dialog with file info
-    // In a real app, you would open the file using a PDF viewer or image viewer
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Attachment'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('File: ${member.attachmentPath!.split('/').last}'),
-            Text(
-                'Type: ${member.attachmentPath!.split('.').last.toUpperCase()}'),
-            const SizedBox(height: 16),
-            const Text(
-              'In a real application, this would open the PDF/image viewer.',
-              style: TextStyle(fontStyle: FontStyle.italic),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('OK'),
-          ),
-        ],
       ),
-    );
-  }
+    ),
+  );
 }

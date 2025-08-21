@@ -10,6 +10,7 @@ import 'package:claim_app/core/widgets/custom_textfield.dart';
 import 'package:claim_app/features/auth/presentation/controllers/auth_controller.dart';
 import 'package:claim_app/core/constants/app_colors.dart';
 import 'package:claim_app/core/widgets/custom_text.dart';
+import 'package:go_router/go_router.dart';
 
 class ForgotPasswordScreen extends ConsumerStatefulWidget {
   const ForgotPasswordScreen({super.key});
@@ -67,7 +68,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
               const SizedBox(height: 36),
               // Card with form
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
+                padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Card(
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20),
@@ -80,7 +81,9 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
                       key: _formKey,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
+                          buildBackButton(),
                           buildHeadingtext('Forgot Password'),
                           const SizedBox(height: 24),
                           buildEmailField(),
@@ -121,6 +124,20 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
           fontSize: 14,
           weight: FontWeight.normal,
           color: Colors.black87,
+        ),
+      ],
+    );
+  }
+
+  Widget buildBackButton() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        IconButton(
+          onPressed: () {
+            context.pop();
+          },
+          icon: const Icon(Icons.chevron_left),
         ),
       ],
     );

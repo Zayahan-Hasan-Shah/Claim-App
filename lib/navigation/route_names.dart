@@ -8,5 +8,6 @@ abstract class RouteNames {
   static const profileScreen = '/profile';
   static const familyMembers = '/family-members';
   static const addFamilyMember = '/add-family-member';
+  static const homeScreen = '/homescsreen';
   static const mainWrapper = '/home';
 }

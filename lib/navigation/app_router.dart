@@ -3,6 +3,7 @@ import 'package:claim_app/features/claim/presentation/screens/add_claim_screen.d
 import 'package:claim_app/features/claim/presentation/screens/claim_list_screen.dart';
 import 'package:claim_app/features/family/presentation/screens/add_family_member_screen.dart';
 import 'package:claim_app/features/family/presentation/screens/family_member_list_screen.dart';
+import 'package:claim_app/features/home/presentation/screens/home_screen.dart';
 import 'package:claim_app/features/main/presentation/screens/main_wrapper.dart';
 import 'package:claim_app/features/onboarding/presentation/screens/splash_screen.dart';
 import 'package:claim_app/features/profile/presentation/screens/profile_screen.dart';
@@ -65,6 +66,10 @@ class AppRouter {
         name: RouteNames.addFamilyMember,
         builder: (context, state) => const AddFamilyMemberScreen(),
       ),
+      GoRoute(
+          path: RouteNames.homeScreen,
+          name: RouteNames.homeScreen,
+          builder: (context, state) => const HomeScreen()),
     ],
   );
 }

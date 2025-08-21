@@ -1,6 +1,6 @@
 // features/claim/presentation/widgets/claims_list.dart
-import 'package:claim_app/core/widgets/claim_card.dart';
 import 'package:claim_app/features/claim/data/models/claim_model.dart';
+import 'package:claim_app/features/claim/presentation/widgets/claim_card.dart';
 import 'package:flutter/material.dart';
 
 class ClaimsList extends StatelessWidget {

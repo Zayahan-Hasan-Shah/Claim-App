@@ -7,13 +7,24 @@ class AuthController extends StateNotifier<AuthState> {
 
   AuthController(this._authRepository) : super(AuthInitial());
 
+  // Future<void> login(String email, String password) async {
+  //   state = AuthLoading();
+  //   try {
+  //     final user = await _authRepository.login(email, password);
+  //     state = AuthAuthenticated(user);
+  //   } catch (e) {
+  //     state = AuthError(e.toString());
+  //   }
+  // }
+
   Future<void> login(String email, String password) async {
     state = AuthLoading();
     try {
       final user = await _authRepository.login(email, password);
       state = AuthAuthenticated(user);
     } catch (e) {
-      state = AuthError(e.toString());
+      final errorMessage = e.toString().replaceFirst('Exception: ', '');
+      state = AuthError(errorMessage);
     }
   }
 

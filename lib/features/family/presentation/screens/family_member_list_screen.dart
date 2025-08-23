@@ -1,6 +1,6 @@
 // features/family/presentation/screens/family_member_list_screen.dart
-import 'package:claim_app/features/family/data/repositories/family_repository.dart';
 import 'package:claim_app/features/family/presentation/controllers/family_controller.dart';
+import 'package:claim_app/features/family/presentation/controllers/family_provider.dart';
 import 'package:claim_app/features/family/presentation/widgets/family_member_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

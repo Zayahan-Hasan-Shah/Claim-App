@@ -1,6 +1,7 @@
 import 'package:claim_app/features/auth/presentation/screens/forgot_password_screen.dart';
-import 'package:claim_app/features/claim/presentation/screens/add_claim_screen.dart';
-import 'package:claim_app/features/claim/presentation/screens/claim_list_screen.dart';
+// import 'package:claim_app/features/claim/presentation/screens/add_claim_screen.dart';
+// import 'package:claim_app/features/claim/presentation/screens/claim_list_screen.dart';
+import 'package:claim_app/features/claim/presentation/screens/user_limits_screen.dart';
 import 'package:claim_app/features/family/presentation/screens/add_family_member_screen.dart';
 import 'package:claim_app/features/family/presentation/screens/family_member_list_screen.dart';
 import 'package:claim_app/features/home/presentation/screens/home_screen.dart';
@@ -41,16 +42,16 @@ class AppRouter {
         name: RouteNames.forgotPassword,
         builder: (context, state) => const ForgotPasswordScreen(),
       ),
-      GoRoute(
-        path: RouteNames.claimList,
-        name: RouteNames.claimList,
-        builder: (context, state) => const ClaimListScreen(),
-      ),
-      GoRoute(
-        path: RouteNames.addClaim,
-        name: RouteNames.addClaim,
-        builder: (context, state) => const AddClaimScreen(),
-      ),
+      // GoRoute(
+      //   path: RouteNames.claimList,
+      //   name: RouteNames.claimList,
+      //   builder: (context, state) => const ClaimListScreen(),
+      // ),
+      // GoRoute(
+      //   path: RouteNames.addClaim,
+      //   name: RouteNames.addClaim,
+      //   builder: (context, state) => const AddClaimScreen(),
+      // ),
       GoRoute(
         path: RouteNames.profileScreen,
         name: RouteNames.profileScreen,
@@ -67,9 +68,15 @@ class AppRouter {
         builder: (context, state) => const AddFamilyMemberScreen(),
       ),
       GoRoute(
-          path: RouteNames.homeScreen,
-          name: RouteNames.homeScreen,
-          builder: (context, state) => const HomeScreen()),
+        path: RouteNames.homeScreen,
+        name: RouteNames.homeScreen,
+        builder: (context, state) => const HomeScreen(),
+      ),
+      GoRoute(
+        path: RouteNames.userLimits,
+        name: RouteNames.userLimits,
+        builder: (context, state) => const UserLimitsScreen(),
+      ),
     ],
   );
 }

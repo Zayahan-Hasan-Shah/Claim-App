@@ -16,23 +16,23 @@ class ProfileScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final authState = ref.watch(authControllerProvider);
-    final claimsState = ref.watch(claimControllerProvider);
+    // final claimsState = ref.watch(claimControllerProvider);
 
     if (authState is! AuthAuthenticated) {
       return const Center(child: Text('Please login to view profile'));
     }
 
     final user = authState.user;
-    final claims = claimsState is ClaimLoaded ? claimsState.claims : [];
+    // final claims = claimsState is ClaimLoaded ? claimsState.claims : [];
 
     // Group claims by relation
     final relationsMap = <String, List<Claim>>{};
-    for (final claim in claims) {
-      final relationKey = getRelationDisplayName(claim.relation);
-      relationsMap.putIfAbsent(relationKey, () => []).add(claim);
+    // for (final claim in claims) {
+    //   final relationKey = getRelationDisplayName(claim.relation);
+    //   relationsMap.putIfAbsent(relationKey, () => []).add(claim);
 
-      // relationsMap.putIfAbsent(relationKey, () => []).add(claim);
-    }
+    //   // relationsMap.putIfAbsent(relationKey, () => []).add(claim);
+    // }
 
     return Scaffold(
       appBar: AppBar(

@@ -1,6 +1,7 @@
 // features/main/presentation/screens/main_wrapper.dart
 import 'package:claim_app/core/constants/app_colors.dart';
 import 'package:claim_app/features/claim/presentation/screens/claim_list_screen.dart';
+import 'package:claim_app/features/claim/presentation/screens/user_limits_screen.dart';
 import 'package:claim_app/features/home/presentation/screens/home_screen.dart';
 import 'package:claim_app/features/main/presentation/controller/main_controller.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +19,8 @@ class MainWrapper extends ConsumerStatefulWidget {
 class _MainWrapperState extends ConsumerState<MainWrapper> {
   final List<Widget> _screens = [
     const HomeScreen(),
-    const ClaimListScreen(),
+    // const ClaimListScreen(),
+    const UserLimitsScreen(),
     const FamilyMemberListScreen(),
     const ProfileScreen(),
   ];

@@ -1,11 +1,18 @@
-import 'package:claim_app/features/claim/data/repositories/claim_repository_impl.dart';
-import 'package:claim_app/features/claim/presentation/controllers/claim_controller.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+// // features/claim/presentation/controllers/claim_provider.dart
+// import 'package:claim_app/core/services/storage_service.dart';
+// import 'package:claim_app/features/claim/data/repositories/claim_repository_impl.dart';
+// import 'package:claim_app/features/claim/presentation/controllers/claim_controller.dart';
+// import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final claimRepositoryProvider = Provider<ClaimRepositoryImpl>((ref) {
-  return ClaimRepositoryImpl();
-});
+// final storageServiceProvider = Provider<StorageService>((ref) {
+//   return StorageService();
+// });
 
-final claimControllerProvider = StateNotifierProvider<ClaimController, ClaimState>(
-  (ref) => ClaimController(ref.read(claimRepositoryProvider)),
-);
+// final claimRepositoryProvider = Provider<ClaimRepositoryImpl>((ref) {
+//   return ClaimRepositoryImpl();
+// });
+
+// final claimControllerProvider =
+//     StateNotifierProvider<ClaimController, ClaimState>(
+//   (ref) => ClaimController(ref.read(claimRepositoryProvider)),
+// );

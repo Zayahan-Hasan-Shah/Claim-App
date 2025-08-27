@@ -10,4 +10,5 @@ abstract class RouteNames {
   static const addFamilyMember = '/add-family-member';
   static const homeScreen = '/homescsreen';
   static const mainWrapper = '/home';
+  static const String userLimits = '/user-limits';
 }

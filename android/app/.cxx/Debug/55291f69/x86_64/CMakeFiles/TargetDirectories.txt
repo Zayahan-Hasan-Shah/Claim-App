@@ -1,0 +1,2 @@
+D:/My Projects/Claim-App/android/app/.cxx/Debug/55291f69/x86_64/CMakeFiles/edit_cache.dir
+D:/My Projects/Claim-App/android/app/.cxx/Debug/55291f69/x86_64/CMakeFiles/rebuild_cache.dir

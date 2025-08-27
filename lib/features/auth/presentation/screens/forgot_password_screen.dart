@@ -55,7 +55,8 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
             end: Alignment.bottomCenter,
             colors: [
               AppColors.brightYellowColor,
-              AppColors.lightYellowColor,
+              AppColors.whiteColor,
+              AppColors.whiteColor,
             ],
           ),
         ),

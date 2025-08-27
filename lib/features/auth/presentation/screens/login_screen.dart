@@ -54,7 +54,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             end: Alignment.bottomCenter,
             colors: [
               AppColors.brightYellowColor,
-              AppColors.lightYellowColor,
+              AppColors.whiteColor,
+              AppColors.whiteColor,
             ],
           ),
         ),
@@ -223,11 +224,19 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     );
   }
 
+  // void _login() {
+  //   if (_formKey.currentState?.validate() ?? false) {
+  //     final email = _emailController.text.trim();
+  //     final password = _passwordController.text.trim();
+  //     ref.read(authControllerProvider.notifier).login(email, password);
+  //   }
+  // }
+
   void _login() {
     if (_formKey.currentState?.validate() ?? false) {
-      final email = _emailController.text.trim();
+      final username = _emailController.text.trim();
       final password = _passwordController.text.trim();
-      ref.read(authControllerProvider.notifier).login(email, password);
+      ref.read(authControllerProvider.notifier).login(username, password);
     }
   }
 }
